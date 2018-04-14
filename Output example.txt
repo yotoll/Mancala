@@ -1,0 +1,9 @@
+P1
+P2
+//Rule set
+//Game type
+//Auto-win?
+//First player's store
+//First player's rows
+//Second player's rows
+//Second player's store
