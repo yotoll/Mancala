@@ -24,8 +24,6 @@ import javax.swing.JRadioButton;
 	playerOneName, playerTwoName;
 	themes
 	
-	
-	
 	Monday
 	- menu option so user can set above
 	- avalanche mode for computer
@@ -34,9 +32,6 @@ import javax.swing.JRadioButton;
 	- tokens on buttons or setting background
 	- save game
 	- music
-	
-	
-
 
 */
 
@@ -80,8 +75,6 @@ public class Game extends JFrame implements ActionListener
 	/* if both variables below are false, we have two human players */										
 	private boolean ComputerPlayer1 = false;	// set to true if the computer is player 1
 	private boolean ComputerPlayer2 = true;	// set to true if the computer is player 2
-																								
-
 	
 	private JLabel turn;					// text label for displaying whose turn it is
 	private JButton undoMove;				// button for undoing a move
@@ -92,6 +85,7 @@ public class Game extends JFrame implements ActionListener
 	private Player playerOne, playerTwo;	// Player variables used to let a user take their turn / shift the array values
 	
 	private String playerOneName, playerTwoName;
+	private String bg;						//Background theme
 	private JButton startGame;
 	
 	
@@ -125,8 +119,21 @@ public class Game extends JFrame implements ActionListener
 		mode.add(cptr);
 		mode.add(avlnch);
 		
-		/*cptr.addItemListener();
-		avlnch.addItemListener();*/
+		cptr.addItemListener(new ItemStateChanged()
+			public void itemStateChanged(ItemEvent event)
+			{
+				CAPTURE = true;
+				AVALANCHE = false;
+			}
+		);
+
+		avlnch.addItemListener(new ItemState Changed()
+			public void itemStateChanged(ItemEvent event)
+			{
+				CAPTURE = false;
+				AVALANCHE = true;
+			}
+		);
 		
 		//Play until 
 			//-all seeds are captured
@@ -143,6 +150,19 @@ public class Game extends JFrame implements ActionListener
 		
 		playuntil.add(mostseed);
 		playuntil.add(allseed);
+
+		mostseed.addItemListener(new ItemState Changed()
+			public void itemStateChanged(ItemEvent event)
+			{
+				playUntilAll = false;
+			}
+		);
+		allseed.addItemListener(new ItemState Changed()
+			public void itemStateChanged(ItemEvent event)
+			{
+				playUntilAll = true;
+			}
+		);
 		
 		//Player names
 		//text fields
@@ -166,31 +186,83 @@ public class Game extends JFrame implements ActionListener
 		comp.add(cp2);
 		comp.add(cpoff);
 		
+		cp1.addItemListener(new ItemState Changed()
+			public void itemStateChanged(ItemEvent event)
+			{
+				ComputerPlayer1 = true;
+				ComputerPlayer2 = false;
+			}
+		);
+		cp2.addItemListener(new ItemState Changed()
+			public void itemStateChanged(ItemEvent event)
+			{
+				ComputerPlayer1 = false;
+				ComputerPlayer2 = true;
+			}
+		);
+		cpoff.addItemListener(new ItemState Changed()
+			public void itemStateChanged(ItemEvent event)
+			{
+				ComputerPlayer1 = false;
+				ComputerPlayer2 = false;
+			}
+		);
+
 		//Theme
 		
 		JRadioButton matbutt = new JRadioButton("Mat", true);
 		JRadioButton candybutt = new JRadioButton("Candy", false);
 		JRadioButton beachbutt = new JRadioButton("Beach", false);
+		JRadioButton horrorbutt = new JRadioButton("Horror", false);
 		
 		add(matbutt);
 		add(candybutt);
 		add(beachbutt);
+		add(horrorbutt);
 		
 		ButtonGroup theme = new ButtonGroup();
 		
 		theme.add(matbutt);
 		theme.add(candybutt);
 		theme.add(beachbutt);
+		theme.add(horrorbutt);
 		
+		//button bounds
 		matbutt.setBounds(50,50,75,75);
 		
+		
+		matbutt.addItemListener(new ItemState Changed()
+			public void itemStateChanged(ItemEvent event)
+			{
+				bg = "mat";
+			}
+		);
+
+		candybutt.addItemListener(new ItemState Changed()
+			public void itemStateChanged(ItemEvent event)
+			{
+				bg = "candy";
+			}
+		);
+
+		beachbutt.addItemListener(new ItemState Changed()
+			public void itemStateChanged(ItemEvent event)
+			{
+				bg = "beach";
+			}
+		);
+
+		horrorbutt.addItemListener(new ItemState Changed()
+			public void itemStateChanged(ItemEvent event)
+			{
+				bg = "horro";
+			}
+		);
+
 		matbutt.setVisible(true);
 		candybutt.setVisible(true);
 		beachbutt.setVisible(true);
-		
-		/*matbutt.addItemListener(new Background("mat"));
-		candybutt.addItemListener(new Background("candy"));
-		beachbutt.addItemListener(new Background("beach"));*/
+		horrorbutt.setVisible(true);
 		
 		/*End options*/
 		
@@ -205,7 +277,7 @@ public class Game extends JFrame implements ActionListener
 					
 					try
 					{
-						setContentPane(new Background());
+						setContentPane(new Background(/*string*/));
 					}
 					catch(IOException event)
 					{
@@ -242,15 +314,9 @@ public class Game extends JFrame implements ActionListener
 		add(startGame);
 		startGame.setVisible(true);
 		
-		
-		
-		
-		
-		
 		// used to determine the positions of the buttons (hollows) on the screen
 		int yslot = 165;
 		int xslot = 225;
-		
 		
 		// initialize the array for holding the number of seeds per hollow
 		arr = new int[size];
