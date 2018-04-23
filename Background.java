@@ -25,11 +25,11 @@ public class Background extends JPanel
 		{
 			img = ImageIO.read(getClass().getResource("mat.jpg"));
 		}
-		else if(bg == "candy")
+		else if(x == "candy")
 		{
 			img = ImageIO.read(getClass().getResource("candy.jpg"));
 		}
-		else if(bg == "beach")
+		else if(x == "beach")
 		{
 			img = ImageIO.read(getClass().getResource("beach.jpg"));
 		}

@@ -12,6 +12,8 @@ import java.awt.image.BufferedImage;
 import java.awt.event.ActionEvent;
 import java.lang.Thread;
 import javax.swing.JRadioButton;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 
 /*
@@ -119,21 +121,8 @@ public class Game extends JFrame implements ActionListener
 		mode.add(cptr);
 		mode.add(avlnch);
 		
-		cptr.addItemListener(new ItemStateChanged()
-			public void itemStateChanged(ItemEvent event)
-			{
-				CAPTURE = true;
-				AVALANCHE = false;
-			}
-		);
-
-		avlnch.addItemListener(new ItemState Changed()
-			public void itemStateChanged(ItemEvent event)
-			{
-				CAPTURE = false;
-				AVALANCHE = true;
-			}
-		);
+		cptr.addItemListener(new ModeChange('c'));
+		avlnch.addItemListener(new ModeChange('a'));
 		
 		//Play until 
 			//-all seeds are captured
@@ -151,18 +140,8 @@ public class Game extends JFrame implements ActionListener
 		playuntil.add(mostseed);
 		playuntil.add(allseed);
 
-		mostseed.addItemListener(new ItemState Changed()
-			public void itemStateChanged(ItemEvent event)
-			{
-				playUntilAll = false;
-			}
-		);
-		allseed.addItemListener(new ItemState Changed()
-			public void itemStateChanged(ItemEvent event)
-			{
-				playUntilAll = true;
-			}
-		);
+		mostseed.addItemListener(new PlayUntilChange('m'));
+		allseed.addItemListener(new PlayUntilChange('a'));
 		
 		//Player names
 		//text fields
@@ -186,27 +165,9 @@ public class Game extends JFrame implements ActionListener
 		comp.add(cp2);
 		comp.add(cpoff);
 		
-		cp1.addItemListener(new ItemState Changed()
-			public void itemStateChanged(ItemEvent event)
-			{
-				ComputerPlayer1 = true;
-				ComputerPlayer2 = false;
-			}
-		);
-		cp2.addItemListener(new ItemState Changed()
-			public void itemStateChanged(ItemEvent event)
-			{
-				ComputerPlayer1 = false;
-				ComputerPlayer2 = true;
-			}
-		);
-		cpoff.addItemListener(new ItemState Changed()
-			public void itemStateChanged(ItemEvent event)
-			{
-				ComputerPlayer1 = false;
-				ComputerPlayer2 = false;
-			}
-		);
+		cp1.addItemListener(new ComputerChange(1));
+		cp2.addItemListener(new ComputerChange(2));
+		cpoff.addItemListener(new ComputerChange(0));
 
 		//Theme
 		
@@ -227,37 +188,15 @@ public class Game extends JFrame implements ActionListener
 		theme.add(beachbutt);
 		theme.add(horrorbutt);
 		
+		
+		matbutt.addItemListener(new ThemeChange('m'));
+		candybutt.addItemListener(new ThemeChange('c'));
+		beachbutt.addItemListener(new ThemeChange('b'));
+		horrorbutt.addItemListener(new ThemeChange('h'));
+		
 		//button bounds
+		
 		matbutt.setBounds(50,50,75,75);
-		
-		
-		matbutt.addItemListener(new ItemState Changed()
-			public void itemStateChanged(ItemEvent event)
-			{
-				bg = "mat";
-			}
-		);
-
-		candybutt.addItemListener(new ItemState Changed()
-			public void itemStateChanged(ItemEvent event)
-			{
-				bg = "candy";
-			}
-		);
-
-		beachbutt.addItemListener(new ItemState Changed()
-			public void itemStateChanged(ItemEvent event)
-			{
-				bg = "beach";
-			}
-		);
-
-		horrorbutt.addItemListener(new ItemState Changed()
-			public void itemStateChanged(ItemEvent event)
-			{
-				bg = "horro";
-			}
-		);
 
 		matbutt.setVisible(true);
 		candybutt.setVisible(true);
@@ -277,7 +216,7 @@ public class Game extends JFrame implements ActionListener
 					
 					try
 					{
-						setContentPane(new Background(/*string*/));
+						setContentPane(new Background(bg));
 					}
 					catch(IOException event)
 					{
@@ -447,8 +386,6 @@ public class Game extends JFrame implements ActionListener
 						// let the computer take a turn at the beginning of the game
 						ComputerPlayer1TakeTurn();			
 					}
-
-					
 					
 					// set visibility to false if clicked
 					b.setVisible(false);
@@ -626,11 +563,6 @@ public class Game extends JFrame implements ActionListener
 			// let the computer take a turn at the beginning of the game
 			ComputerPlayer1TakeTurn();			
 		}
-		
-
-			
-			
-			
 
 	}
 
@@ -654,7 +586,6 @@ public class Game extends JFrame implements ActionListener
 						
 			// display whose turn it is
 			turn.setText("Player " + Player + "'s turn");
-		
 		
 	}
 	
@@ -861,8 +792,6 @@ public class Game extends JFrame implements ActionListener
 		committed = true;
 		save = true;	
 
-		
-		
 	}
 	
 	*/
@@ -899,8 +828,6 @@ public class Game extends JFrame implements ActionListener
 		{
 			return playUntilMost();
 		}
-		
-
 
 	}
 	
@@ -1104,6 +1031,98 @@ public class Game extends JFrame implements ActionListener
 		}
 	}
 	
+
+	//Options menu
+	private class ModeChange implements ItemListener
+	{
+		char mode;
+
+		public ModeChange(char c){ mode = c; }
+
+		public void itemStateChanged(ItemEvent event)
+			{
+				if(mode =='a')
+				{
+					CAPTURE = false;
+					AVALANCHE = true;
+				}
+				else if(mode =='c')
+				{
+					CAPTURE = false;
+					AVALANCHE = true;
+				}
+			}
+	}
+
+	private class PlayUntilChange implements ItemListener
+	{
+		char mode;
+
+		public PlayUntilChange(char c){ mode = c; }
+
+		public void itemStateChanged(ItemEvent event)
+			{
+				if(mode =='a')
+				{
+					playUntilAll = true;
+				}
+				else
+					playUntilAll = false;
+			}
+	}
+
+	private class ComputerChange implements ItemListener
+	{
+		int mode;
+
+		public ComputerChange(int x){ mode = x; }
+
+		public void itemStateChanged(ItemEvent event)
+			{
+				if(mode ==0)
+				{
+					ComputerPlayer1 = false;
+					ComputerPlayer2 = false;
+				}
+				else if(mode ==1)
+				{
+					ComputerPlayer1 = true;
+					ComputerPlayer2 = false;
+				}
+				else
+				{
+					ComputerPlayer1 = false;
+					ComputerPlayer2 = true;
+				}
+			}
+	}
+
+	private class ThemeChange implements ItemListener
+	{
+		char mode;
+
+		public ThemeChange(char c){ mode = c; }
+
+		public void itemStateChanged(ItemEvent event)
+			{
+				if(mode =='b')
+				{
+					bg = "beach";
+				}
+				else if(mode =='c')
+				{
+					bg = "candy";
+				}
+				else if(mode == 'h')
+				{
+					bg = "horror";
+				}
+				else
+				{
+					bg = "mat";
+				}
+			}
+	}
 
 }
 
