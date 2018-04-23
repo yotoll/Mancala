@@ -1,3 +1,4 @@
+
 import java.awt.event.*;
 import java.awt.Color;
 import javax.swing.JPanel;
@@ -15,6 +16,17 @@ import javax.swing.JRadioButton;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 
+import java.awt.Graphics;
+import java.awt.Color;
+import javax.swing.JPanel;
+import javax.swing.JFrame;
+import javax.imageio.ImageIO;
+import java.awt.Image;
+import java.io.*;
+import java.awt.Graphics2D;
+import java.awt.BasicStroke;
+import javax.swing.JLabel;
+import java.awt.Font;
 
 /*
 
@@ -25,6 +37,8 @@ import java.awt.event.ItemEvent;
 	ComputerPlayer1 and ComputerPlayer2
 	playerOneName, playerTwoName;
 	themes
+	
+	
 	
 	Monday
 	- menu option so user can set above
@@ -37,14 +51,36 @@ import java.awt.event.ItemEvent;
 
 */
 
+/*
+
+	DIFFERENT WAYS TO PLAY GAME:
+	
+	Capture mode with:
+	1) two human players with play until all							
+	2) two human players with play until most							
+	3) computer player one, human player two play until all				
+	4) computer player one, human player two play until most				
+	5) computer player two, human player one play until all				
+	6) computer player two, human player one play until most				
+	
+
+	Avalanche mode with:
+	1) two human players with play until all
+	2) two human players with play until most
+	3) computer player one, human player two play until all
+	4) computer player one, human player two play until most
+	5) computer player two, human player one play until all
+	6) computer player two, human player one play until most
+
+*/
 
 
-public class Game extends JFrame implements ActionListener
+public class Game extends JPanel implements ActionListener
 {	
 	private int[] arr;						// array of integers to represent the number of stones in each slot
 	private int[] saveArr;					// array of integers that allows user to undo move
 	private int size = 14;					// number of holes (2 for storing points, 6 on either side)
-	private int seeds = 2;
+	private int seeds = 4;
 	private int totalSeeds;
 	private int winner = 0;						// set winner to 1 for pl1_store, set to 2 for pl2_store, set to 3 if tie
 	private int pl1_store;						// number indicating the array element for player one "store"
@@ -75,8 +111,10 @@ public class Game extends JFrame implements ActionListener
 									
 									
 	/* if both variables below are false, we have two human players */										
-	private boolean ComputerPlayer1 = false;	// set to true if the computer is player 1
-	private boolean ComputerPlayer2 = true;	// set to true if the computer is player 2
+	private boolean ComputerPlayer1 = false;		// set to true if the computer is player 1
+	private boolean ComputerPlayer2 = false;	// set to true if the computer is player 2
+																								
+
 	
 	private JLabel turn;					// text label for displaying whose turn it is
 	private JButton undoMove;				// button for undoing a move
@@ -87,175 +125,105 @@ public class Game extends JFrame implements ActionListener
 	private Player playerOne, playerTwo;	// Player variables used to let a user take their turn / shift the array values
 	
 	private String playerOneName, playerTwoName;
-	private String bg;						//Background theme
 	private JButton startGame;
+	private String bg;
 	
 	
-	public Game() throws IOException
+	
+	private JRadioButton cptr;
+	private JRadioButton avlnch;
+	private ButtonGroup mode;
+	private JRadioButton mostseed;
+	private JRadioButton allseed;
+	private ButtonGroup playuntil;
+	private JRadioButton cp1;
+	private JRadioButton cp2;
+	private JRadioButton cpoff;
+	private ButtonGroup comp;
+	private JRadioButton matbutt;
+	private JRadioButton candybutt;
+	private JRadioButton beachbutt;
+	private JRadioButton horrorbutt;
+	
+	private Image img;
+	private Image img2;
+	private JLabel pl1Side;
+	private JLabel pl2Side;
+	
+	private String theme;
+	
+	//CAPTURE,AVALANCHE,playUntilAll,ComputerPlayer1,ComputerPlayer2
+	public Game(String bg, boolean cp, boolean aval, boolean plUntAll, boolean cmpPl1, boolean cmpPl2) throws IOException
 	{
 		
-		super("MANCALA");
+		theme = bg;
+		CAPTURE = cp;
+		AVALANCHE = aval;
+		playUntilAll = plUntAll;
+		ComputerPlayer1 = cmpPl1;
+		ComputerPlayer2 = cmpPl2;
+		Color txtcolor = new Color(Color.WHITE.getRGB());
+		
+		
+		if(theme == "mat")
+		{
+			//img = ImageIO.read(getClass().getResource("mat.jpg"));
+			img = ImageIO.read(getClass().getResource("rug.jpg"));
+			img2 = ImageIO.read(getClass().getResource("wood.jpg"));
+			txtcolor = new Color(Color.WHITE.getRGB());
+		}
+		else if(theme == "candy")
+		{
+			img = ImageIO.read(getClass().getResource("candy.jpg"));
+			txtcolor = new Color(Color.BLACK.getRGB());
+		}
+		else if(theme == "beach")
+		{
+			img = ImageIO.read(getClass().getResource("beach.jpg"));
+			txtcolor = new Color(Color.BLACK.getRGB());
+		}
+		else if(theme == "horror")
+		{
+			img = ImageIO.read(getClass().getResource("horror.jpg"));
+			txtcolor = new Color(Color.WHITE.getRGB());
+		}
+		else
+		{
+			theme = "mat";
+			//img = ImageIO.read(getClass().getResource("mat.jpg"));
+			img = ImageIO.read(getClass().getResource("rug.jpg"));
+			img2 = ImageIO.read(getClass().getResource("wood.jpg"));
+			txtcolor = new Color(Color.WHITE.getRGB());
+			
+		}
+
+		pl1Side = new JLabel();
+		pl1Side.setBounds(230,-15,300,150);
+		pl1Side.setForeground(txtcolor);
+		pl1Side.setFont(new Font("Serif", Font.BOLD, 35));
+		pl1Side.setText("P1");
+		add(pl1Side);
+		
+		pl2Side = new JLabel();
+		pl2Side.setBounds(385,-15,300,150);
+		pl2Side.setForeground(txtcolor);
+		pl2Side.setFont(new Font("Serif", Font.BOLD, 35));
+		pl2Side.setText("P2");
+		add(pl2Side);
+		
+		
+		
+		//super("MANCALA");
 		setLayout(null);				
-		setForeground(Color.WHITE);
+		setForeground(txtcolor);
+		
+		
 	
-		/*Options go here*/
-		
-		/*seeds
-		CAPTURE
-		AVALANCHE
-		playUntilAll (t or false) - if false, playUntilMost
-		ComputerPlayer1 and ComputerPlayer2
-		playerOneName, playerTwoName;
-		themes*/
-		
-		//Game mode
-		
-		JRadioButton cptr = new JRadioButton("Capture", true);
-		JRadioButton avlnch = new JRadioButton("Avalanche", false);
-		
-		add(cptr);
-		add(avlnch);
-		
-		ButtonGroup mode = new ButtonGroup();
-		
-		mode.add(cptr);
-		mode.add(avlnch);
-		
-		cptr.addItemListener(new ModeChange('c'));
-		avlnch.addItemListener(new ModeChange('a'));
-		
-		//Play until 
-			//-all seeds are captured
-			//-most seeds are captured
-		JRadioButton mostseed = 
-				new JRadioButton("Most seeds are captured", true);
-		JRadioButton allseed = 
-				new JRadioButton("All seeds are captured", false);
-		
-		add(mostseed);
-		add(allseed);
-		
-		ButtonGroup playuntil = new ButtonGroup();
-		
-		playuntil.add(mostseed);
-		playuntil.add(allseed);
-
-		mostseed.addItemListener(new PlayUntilChange('m'));
-		allseed.addItemListener(new PlayUntilChange('a'));
-		
-		//Player names
-		//text fields
-		
-		
-		//Computer is:
-			//-Player 1
-			//-Player 2 (default?)
-			//-Off
-		JRadioButton cp1 = new JRadioButton("Player 1", false);
-		JRadioButton cp2 = new JRadioButton("Player 2", true);
-		JRadioButton cpoff = new JRadioButton("Off", false);
-		
-		add(cp1);
-		add(cp2);
-		add(cpoff);
-		
-		ButtonGroup comp = new ButtonGroup();
-		
-		comp.add(cp1);
-		comp.add(cp2);
-		comp.add(cpoff);
-		
-		cp1.addItemListener(new ComputerChange(1));
-		cp2.addItemListener(new ComputerChange(2));
-		cpoff.addItemListener(new ComputerChange(0));
-
-		//Theme
-		
-		JRadioButton matbutt = new JRadioButton("Mat", true);
-		JRadioButton candybutt = new JRadioButton("Candy", false);
-		JRadioButton beachbutt = new JRadioButton("Beach", false);
-		JRadioButton horrorbutt = new JRadioButton("Horror", false);
-		
-		add(matbutt);
-		add(candybutt);
-		add(beachbutt);
-		add(horrorbutt);
-		
-		ButtonGroup theme = new ButtonGroup();
-		
-		theme.add(matbutt);
-		theme.add(candybutt);
-		theme.add(beachbutt);
-		theme.add(horrorbutt);
-		
-		
-		matbutt.addItemListener(new ThemeChange('m'));
-		candybutt.addItemListener(new ThemeChange('c'));
-		beachbutt.addItemListener(new ThemeChange('b'));
-		horrorbutt.addItemListener(new ThemeChange('h'));
-		
-		//button bounds
-		
-		matbutt.setBounds(50,50,75,75);
-
-		matbutt.setVisible(true);
-		candybutt.setVisible(true);
-		beachbutt.setVisible(true);
-		horrorbutt.setVisible(true);
-		
-		/*End options*/
-		
-		startGame = new JButton("Start Game");
-		startGame.addActionListener(
-			new ActionListener()
-			{
-				public void actionPerformed(ActionEvent e)
-				{
-		
-					startGame.setVisible(false);
-					
-					try
-					{
-						setContentPane(new Background(bg));
-					}
-					catch(IOException event)
-					{
-						event.printStackTrace();						
-					}
-					
-					
-					// set turn and buttons to be visible
-					add(turn);
-					turn.setVisible(true);
-					
-					// add undoMove, playAgain, and commitMove buttons
-					add(undoMove);
-					undoMove.setVisible(false);
-					
-					add(PlayAgain);
-					PlayAgain.setVisible(false);
-					
-					add(commitMove);
-					commitMove.setVisible(false);
-					
-					
-					for (int i = 0; i < arr.length; i++)
-					{
-						add(slot[i]);
-						slot[i].setVisible(true);
-					}
-					
-					
-				}
-			});
-
-		startGame.setBounds(250,300,150,75);
-		add(startGame);
-		startGame.setVisible(true);
 		
 		// used to determine the positions of the buttons (hollows) on the screen
 		int yslot = 165;
 		int xslot = 225;
+		
 		
 		// initialize the array for holding the number of seeds per hollow
 		arr = new int[size];
@@ -282,7 +250,6 @@ public class Game extends JFrame implements ActionListener
 		// do not count the two store hollows when determining the total number of seeds
 		totalSeeds = (size - 2) * seeds;
 		
-		
 		// declare the Player member variables which are used to let players take a turn (select a hollow)
 		
 		// if we have two human players
@@ -306,8 +273,7 @@ public class Game extends JFrame implements ActionListener
 			playerTwo = new Computer(2, pl2_store, pl1_store);
 		}
 			
-			
-		
+	
 		// initialize array of buttons
 		slot = new JButton[size];
 		
@@ -317,11 +283,9 @@ public class Game extends JFrame implements ActionListener
 		
 		// set label properties for displaying whose turn it is
 		turn.setBounds(20,540,300,150);
-		turn.setForeground(Color.WHITE);
+		turn.setForeground(txtcolor);
 		turn.setFont(new Font("Serif", Font.BOLD, 40));
 		turn.setText("Player " + Player + "'s turn");
-		//add(turn);
-		//turn.setVisible(false);
 		
 		
 		// draw the slots on the board
@@ -345,10 +309,6 @@ public class Game extends JFrame implements ActionListener
 					slot[i].setBounds(255,510,140,40);
 				
 			}
-			
-			// add each button to the JFrame
-			//add(slot[i]);
-			//slot[i].setVisible(false);
 			
 			
 			if (i != pl1_store && i != pl2_store)
@@ -386,6 +346,7 @@ public class Game extends JFrame implements ActionListener
 						// let the computer take a turn at the beginning of the game
 						ComputerPlayer1TakeTurn();			
 					}
+
 					
 					// set visibility to false if clicked
 					b.setVisible(false);
@@ -429,8 +390,6 @@ public class Game extends JFrame implements ActionListener
 			});
 
 		undoMove.setBounds(20,200,150,75);
-		//add(undoMove);
-		//undoMove.setVisible(false);
 		
 
 	// COMMIT MOVE ACTION LISTENER
@@ -443,20 +402,20 @@ public class Game extends JFrame implements ActionListener
 				{
 					JButton b = (JButton)(e.getSource());
 					boolean checkWin;
-					
+							
 					if (Player == 1 && endTurn== true)
 					{
-						Player = 2;
-						
-						// display whose turn it is
-						turn.setText("Player " + Player + "'s turn");
+							Player = 2;
+							
+							// display whose turn it is
+							turn.setText("Player " + Player + "'s turn");
 					}
 					else if (Player == 2 && endTurn== true)
 					{
-						Player = 1;
-						
-						// display whose turn it is
-						turn.setText("Player " + Player + "'s turn");
+							Player = 1;
+							
+							// display whose turn it is
+							turn.setText("Player " + Player + "'s turn");
 					}
 
 					
@@ -464,8 +423,7 @@ public class Game extends JFrame implements ActionListener
 					checkWin = CheckForWinner(b);
 
 
-					/*	IN PROGRESS
-					
+					/*					
 						THIS IS WHERE WE INVOKE A CLICK FOR COMPUTER PLAYER IF COMPUTER PLAYER IS PLAYER 2
 					*/
 					
@@ -478,7 +436,11 @@ public class Game extends JFrame implements ActionListener
 						{
 							// let the computer keep taking a turn while the last seed lands inside it's store
 							do{
-								//delay();
+					
+								delay();
+								delay();
+								
+								// DISPLAY A LABEL THAT SAYS PLAYER TWO OR ONE IS GOING
 								
 								
 								// first two parameters are not needed for the takeTurn method in class Computer
@@ -511,7 +473,7 @@ public class Game extends JFrame implements ActionListener
 								commitMove.doClick();
 							
 						}
-				}
+					}
 					
 				}
 			
@@ -549,48 +511,78 @@ public class Game extends JFrame implements ActionListener
 			});
 		
 		commitMove.setBounds(20,100,150,75);
-		//add(commitMove);
-		//commitMove.setVisible(false);
+	
 		
-		
-		/*	IN PROGRESS
-					
+		/*					
 			THIS IS WHERE WE INVOKE A CLICK FOR COMPUTER PLAYER IF COMPUTER PLAYER IS PLAYER 1
 		*/
+		// set turn and buttons to be visible
+		add(turn);
+		turn.setVisible(true);
+		
+		// add undoMove, playAgain, and commitMove buttons
+		add(undoMove);
+		undoMove.setVisible(false);
+		
+		add(PlayAgain);
+		PlayAgain.setVisible(false);
+		
+		add(commitMove);
+		commitMove.setVisible(false);
+		
+		
+		for (int i = 0; i < arr.length; i++)
+		{
+			add(slot[i]);
+			slot[i].setVisible(true);
+		}
 	
 		if (Player == 1 && ComputerPlayer1 == true)
 		{
 			// let the computer take a turn at the beginning of the game
-			ComputerPlayer1TakeTurn();			
+			delay();
+
+			ComputerPlayer1TakeTurn();		
+
+			
+			System.out.println("computer taking a turn!!!!!!!");
+			
 		}
+		
 
 	}
 
 	
-	public void ComputerPlayer1TakeTurn()
+		
+	public void paintComponent(Graphics g)
 	{
-		int index;
+		super.paintComponent(g);
+					
+		g.drawImage(img,-45,-50,760,760,null);
 		
-		do{
-				//delay();
+		if (theme == "mat")
+			g.drawImage(img2,200,100,250,460,null);
+
 			
-				index = playerOne.takeTurn(-1, -1, arr, slot, CAPTURE, AVALANCHE);
+		if (theme != "candy")
+		{
+			Graphics2D g2d = (Graphics2D) g;
+			g2d.setStroke(new BasicStroke(4));
 			
-				slot[index].doClick();
-				redrawTextonButtons();
+			// game board
+			g.setColor(Color.BLACK);
 			
+			g.drawRoundRect(200,100,250,460,20,20);
 			
-			} while (index == playerOne.store);
-			
-			Player = 2;
-						
-			// display whose turn it is
-			turn.setText("Player " + Player + "'s turn");
+		}
+		
+		
+		
 		
 	}
 	
 	
-
+	
 	public void actionPerformed(ActionEvent e)
 	{
 		/*
@@ -678,6 +670,7 @@ public class Game extends JFrame implements ActionListener
 					{
 						saveArr[i] = arr[i];
 					}
+					System.out.println("saving array");
 				}
 				
 				// if playing in avalanche mode and the button has been clicked by the user
@@ -714,11 +707,19 @@ public class Game extends JFrame implements ActionListener
 				if (Player == 1)
 				{
 					l = playerOne.takeTurn(hand, l, arr, slot, CAPTURE, AVALANCHE);
+					if (playerOne.freeTurn == true)
+						System.out.println("true");
+					else
+						System.out.println("false");
 					redrawTextonButtons();
 				}
 				else
 				{
 					l = playerTwo.takeTurn(hand, l, arr, slot, CAPTURE, AVALANCHE);
+					if (playerOne.freeTurn == true)
+						System.out.println("true2");
+					else
+						System.out.println("false2");
 					redrawTextonButtons();
 				}
 
@@ -744,14 +745,50 @@ public class Game extends JFrame implements ActionListener
 			{
 				endTurn= false;
 			}
-		
-
-		
+			
+	
 		}
+		
+		
+		if (ComputerPlayer1 == true && Player == 1 && AVALANCHE)
+				commitMove.doClick();
 		
 	}
 	
+	
+	public void ComputerPlayer1TakeTurn()
+	{
+		int index;
+		
+		if (AVALANCHE)
+		{
+			do
+			{
+				index = playerOne.takeTurn(-1, -1, arr, slot, CAPTURE, AVALANCHE);
+			} while (playerOne.freeTurn == true);
+		}
+		
+		if (CAPTURE)
+		{
+			
+			do{
+				index = playerOne.takeTurn(-1, -1, arr, slot, CAPTURE, AVALANCHE);
+				slot[index].doClick();
+			} while (index == playerOne.store);
+	
+		}
 
+	
+		Player = 2;
+						
+		// display whose turn it is
+		turn.setText("Player " + Player + "'s turn");
+		redrawTextonButtons();
+		
+		
+	}
+	
+	
 	public void delay()
 	{
 		// used to delay when computer is choosing a hollow
@@ -768,33 +805,7 @@ public class Game extends JFrame implements ActionListener
 		
 	}
 	
-	/*
-	public void CheckForWinner()
-	{
-		if (Winner())
-		{
-			// if the game was not a tie
-			if (winner != 3)
-				turn.setText("Player " + winner + " wins!");
-			// game is a tie if winner == 3
-			else
-				turn.setText("Draw!");
-			
-			
-			
-			// set play again button visibility to true so that user can chose to play again
-			PlayAgain.setVisible(true);
-			
-		}
-		
-		b.setVisible(false);
-		undoMove.setVisible(false);
-		committed = true;
-		save = true;	
-
-	}
 	
-	*/
 	
 	
 	public boolean Winner()
@@ -824,23 +835,26 @@ public class Game extends JFrame implements ActionListener
 		// if one player's store collects more than half of the total number of seeds, that player wins
 		//		if one side becomes empty before that happens, then let the other player collect the rest
 		//		of his/her seeds
-		else
+		else if (playUntilAll == false)
 		{
 			return playUntilMost();
 		}
+		
+
+		return false;
 
 	}
 	
 	
 	public boolean playUntilMost()
 	{
-		if (playerOne.points > (totalSeeds/2))
+		if (arr[playerOne.store] > (totalSeeds/2))
 		{
 			winner = 1;
 			GameOver = true;
 			return true;
 		}
-		else if (playerTwo.points > (totalSeeds/2))
+		else if (arr[playerTwo.store] > (totalSeeds/2))
 		{
 			winner = 2;
 			GameOver = true;
@@ -1031,98 +1045,7 @@ public class Game extends JFrame implements ActionListener
 		}
 	}
 	
-
-	//Options menu
-	private class ModeChange implements ItemListener
-	{
-		char mode;
-
-		public ModeChange(char c){ mode = c; }
-
-		public void itemStateChanged(ItemEvent event)
-			{
-				if(mode =='a')
-				{
-					CAPTURE = false;
-					AVALANCHE = true;
-				}
-				else if(mode =='c')
-				{
-					CAPTURE = false;
-					AVALANCHE = true;
-				}
-			}
-	}
-
-	private class PlayUntilChange implements ItemListener
-	{
-		char mode;
-
-		public PlayUntilChange(char c){ mode = c; }
-
-		public void itemStateChanged(ItemEvent event)
-			{
-				if(mode =='a')
-				{
-					playUntilAll = true;
-				}
-				else
-					playUntilAll = false;
-			}
-	}
-
-	private class ComputerChange implements ItemListener
-	{
-		int mode;
-
-		public ComputerChange(int x){ mode = x; }
-
-		public void itemStateChanged(ItemEvent event)
-			{
-				if(mode ==0)
-				{
-					ComputerPlayer1 = false;
-					ComputerPlayer2 = false;
-				}
-				else if(mode ==1)
-				{
-					ComputerPlayer1 = true;
-					ComputerPlayer2 = false;
-				}
-				else
-				{
-					ComputerPlayer1 = false;
-					ComputerPlayer2 = true;
-				}
-			}
-	}
-
-	private class ThemeChange implements ItemListener
-	{
-		char mode;
-
-		public ThemeChange(char c){ mode = c; }
-
-		public void itemStateChanged(ItemEvent event)
-			{
-				if(mode =='b')
-				{
-					bg = "beach";
-				}
-				else if(mode =='c')
-				{
-					bg = "candy";
-				}
-				else if(mode == 'h')
-				{
-					bg = "horror";
-				}
-				else
-				{
-					bg = "mat";
-				}
-			}
-	}
+	
 
 }
 
