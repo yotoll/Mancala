@@ -30,7 +30,32 @@ tokens, the player picks up all of the tokens and continues
 around the board until their last seed lands in their store
 or in an empty slot.
 
+INTERFACE:
+-Start Game starts a new game
+-Rules lists the rules of mancala and the two different
+modes
+-Theme radio buttons are for choosing the game background
+-Computer radio buttons are for choosing whether the computer
+is player 1, player 2, or off
+-Capture and Avalance radio buttons are the two game modes
+-Player 1 and Player 2 name fields are for inputting the
+names of players
+-After options have been selected, start game initializes
+a new game
+-The central "board" has buttons that correspond to the
+tokens in those slots. These are pressed to make a move.
+-Once the token is pressed, commit and undo move buttons are
+used to either confirm the move or undo the move before
+moving to the next turn
+-End game button ends the game and returns the user to the
+start menu
+
 EXTRA:
 -2 rule variants
 -All backgrounds/images drawn by Abigail Morrison
 -Music added (source?)
+
+WORK SEPARATION:
+-Abigail Centers primarily worked on game logic and layout
+-Abigail Morrison drew the background images, token images,
+and worked on menu options and radio buttons
