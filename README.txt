@@ -62,8 +62,9 @@ modes
 is player 1, player 2, or off
 -Capture and Avalanche radio buttons are the two game modes
 -Player 1 and Player 2 name fields are for inputting the
-names of players (game does not initialize if these fields 
-are empty
+names of players
+- An error will appear if one or both of these fields are empty 
+or if they are equal
 - All radio buttons and textfields are set to a default value on
 first opening the Options layout
 -After options have been selected, start game initializes
@@ -100,8 +101,9 @@ EXTRA:
 -All backgrounds/images drawn by Abigail Morrison
 -Music (music varies for horror theme)
 
-Sources:
+Music sources:
 https://www.youtube.com/watch?v=muQm1pQI2dc
+http://www.skulduggerypleasant.co.uk/games-downloads/
 
 
 WORK SEPARATION:
