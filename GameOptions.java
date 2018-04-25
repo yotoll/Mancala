@@ -561,7 +561,11 @@ class GameOptions extends JFrame
 				JOptionPane.showConfirmDialog(GameOptions.this, "Please enter a name for player 2",  
 				"Enter player name", JOptionPane.PLAIN_MESSAGE);
 			}
-				
+			else if (n1.equals(n2))
+			{
+				JOptionPane.showConfirmDialog(GameOptions.this, "Player names cannot be the same",  
+				"Identical player names", JOptionPane.PLAIN_MESSAGE);
+			}				
 			else
 			{
 				startGame.setVisible(false);
