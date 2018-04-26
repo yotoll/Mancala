@@ -108,6 +108,6 @@ http://www.skulduggerypleasant.co.uk/games-downloads/
 
 WORK SEPARATION:
 -Abigail Centers worked on game logic, layout transitions, object placements 
-on each layout and music
+on each layout, music and class design
 -Abigail Morrison drew the background images, token images,
 and worked on menu options, radio buttons and their action listener functions
