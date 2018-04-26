@@ -105,9 +105,9 @@ class GameOptions extends JFrame
 		}
 		
 		// initialize start game button located on options layout
-		startGame = new JButton("Start Game");
+		startGame = new JButton("START GAME");
 		startGame.addActionListener(new StartGame());
-		startGame.setBounds(500,540,150,75);
+		startGame.setBounds(490,540,170,75);
 		add(startGame);
 		startGame.setBackground(Color.RED);
 		startGame.setForeground(Color.WHITE);
@@ -205,7 +205,7 @@ class GameOptions extends JFrame
 	
 
 		// ADD LABELS, BOUNDARIES, FONTS
-		int yPos = 40;
+		int yPos = 55;
 		
 		Options = new JLabel();
 		Options.setBounds(250,-20,300,150);
@@ -306,6 +306,7 @@ class GameOptions extends JFrame
 		avlnch.setOpaque(false);
 		
 		
+		yPos -= 10;
 		EnterName1 = new JLabel("");
 		EnterName1.setBounds(90,yPos + 380,300,150);
 		EnterName1.setForeground(Color.BLACK);
